@@ -45,7 +45,7 @@
 
             var product = _inventory[productId];
 
-            if (quantity < 0)
+            if (quantity <= 0)
             {
                 return new OrderResult { IsSuccess = false, Message = "Quantity must be positive." };
             }

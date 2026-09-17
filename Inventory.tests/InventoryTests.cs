@@ -76,6 +76,7 @@ namespace Inventory.tests
 
             // Assert
             Assert.False(result.IsSuccess);
+            Assert.Equal("Quantity must be positive.", result.Message);
         }
     }
 }
