@@ -95,5 +95,18 @@ namespace Inventory.tests
             Assert.True(result.IsSuccess);
             Assert.Equal(Math.Round(expectedCost, 2), result.TotalCost);
         }
+
+        [Fact]
+        public void ProcessOrder_FakeProduct_ReturnUnsuccessfulOrder()
+        {
+            // Arrange
+
+            // Act
+            OrderResult result = _orderService.ProcessOrder("P400", 20, 0);
+
+            // Assert
+            Assert.False(result.IsSuccess);
+            Assert.Equal("Product not found.", result.Message);
+        }
     }
 }
