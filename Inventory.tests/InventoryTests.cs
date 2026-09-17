@@ -9,6 +9,7 @@ namespace Inventory.tests
     {
         private static readonly InventoryOrderService _orderService = new();
         private static readonly Product _exProduct1 = new Product { Id = "P100", Name = "TestProduct", UnitPrice = 100.00m, StockQuantity = 100 };
+        private static readonly Product _exProduct2 = new Product { Id = "P200", Name = "TestProduct2", UnitPrice = 0m, StockQuantity = 0 };
 
         // Happy path tests
         [Fact]
@@ -61,6 +62,20 @@ namespace Inventory.tests
             // Assert
             Assert.False(result.IsSuccess);
             Assert.Equal("Insufficient stock.", result.Message);
+        }
+
+        // Edge/Boundary Case Tests
+        [Fact]
+        public void ProcessOrder_ZeroQuantity_ReturnsUnsuccessfulOrder()
+        {
+            // Arrange
+            _orderService.AddProduct(_exProduct2);
+
+            // Act
+            OrderResult result = _orderService.ProcessOrder("P200", 0, 0);
+
+            // Assert
+            Assert.False(result.IsSuccess);
         }
     }
 }
