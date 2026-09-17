@@ -48,5 +48,19 @@ namespace Inventory.tests
             Assert.Equal(Math.Round(expectedCost, 2), result.TotalCost);
             Assert.Equal("Order processed successfully.", result.Message);
         }
+
+        [Fact]
+        public void ProcessOrder_InsufficientStock_ReturnsUnsuccessfulOrder()
+        {
+            // Arrange
+            _orderService.AddProduct(_exProduct1);
+
+            // Act
+            OrderResult result = _orderService.ProcessOrder("P100", 200, 0);
+
+            // Assert
+            Assert.False(result.IsSuccess);
+            Assert.Equal("Insufficient stock.", result.Message);
+        }
     }
 }
