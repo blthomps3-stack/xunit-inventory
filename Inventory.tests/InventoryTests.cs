@@ -9,6 +9,8 @@ namespace Inventory.tests
     {
         private static readonly InventoryOrderService _orderService = new();
         private static readonly Product _exProduct1 = new Product { Id = "P100", Name = "TestProduct", UnitPrice = 100.00m, StockQuantity = 100 };
+        private static readonly Product _exProduct2 = new Product { Id = "P200", Name = "TestProduct2", UnitPrice = 0m, StockQuantity = 0 };
+        private static readonly Product _exProduct3 = new Product { Id = "P300", Name = "TestProduct3", UnitPrice = 1000000.00m, StockQuantity = 10000 };
 
         // Happy path tests
         [Fact]
@@ -61,6 +63,50 @@ namespace Inventory.tests
             // Assert
             Assert.False(result.IsSuccess);
             Assert.Equal("Insufficient stock.", result.Message);
+        }
+
+        // Edge/Boundary Case Tests
+        [Fact]
+        public void ProcessOrder_ZeroQuantity_ReturnsUnsuccessfulOrder()
+        {
+            // Arrange
+            _orderService.AddProduct(_exProduct2);
+
+            // Act
+            OrderResult result = _orderService.ProcessOrder("P200", 0, 0);
+
+            // Assert
+            Assert.False(result.IsSuccess);
+            Assert.Equal("Quantity must be positive.", result.Message);
+        }
+
+        [Fact]
+        public void ProcessOrder_HugeOrder_ProcessOrderSuccessfully()
+        {
+            // Arrange
+            _orderService.AddProduct(_exProduct3);
+
+            // Act 
+            OrderResult result = _orderService.ProcessOrder("P300", 10000, 0);
+            decimal expectedCost = _exProduct3.UnitPrice * 10000;
+            expectedCost -= expectedCost * 0.20m;
+
+            // Assert
+            Assert.True(result.IsSuccess);
+            Assert.Equal(Math.Round(expectedCost, 2), result.TotalCost);
+        }
+
+        [Fact]
+        public void ProcessOrder_FakeProduct_ReturnUnsuccessfulOrder()
+        {
+            // Arrange
+
+            // Act
+            OrderResult result = _orderService.ProcessOrder("P400", 20, 0);
+
+            // Assert
+            Assert.False(result.IsSuccess);
+            Assert.Equal("Product not found.", result.Message);
         }
     }
 }
