@@ -122,5 +122,17 @@ namespace Inventory.tests
             // Assert
             Assert.Equal("Invalid product details.", exception.Message);
         }
+
+        [Fact]
+        public void AddProduct_NullProduct_ThrowsArgumentException()
+        {
+            // Arrange
+
+            // Act
+            var exception = Assert.Throws<ArgumentException>(() => _orderService.AddProduct(null));
+
+            // Assert
+            Assert.Equal("Invalid product details.", exception.Message);
+        }
     }
 }
