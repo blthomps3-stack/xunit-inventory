@@ -108,5 +108,19 @@ namespace Inventory.tests
             Assert.False(result.IsSuccess);
             Assert.Equal("Product not found.", result.Message);
         }
+
+        // Exception Handling
+        [Fact]
+        public void AddProduct_InvalidId_ThrowsArgumentException()
+        {
+            // Arrange
+            Product exProduct4 = new Product { Id = "", Name= "TestProduct4", StockQuantity = 0, UnitPrice = 0 };
+
+            // Act
+            var exception = Assert.Throws<ArgumentException>(() => _orderService.AddProduct(exProduct4));
+
+            // Assert
+            Assert.Equal("Invalid product details.", exception.Message);
+        }
     }
 }
